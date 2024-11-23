@@ -35,8 +35,4 @@ defmodule Cmbc.LittleDBTest do
     assert LittleDB.set("lahabrea", "123") == {:ok, "NIL 123"}
     assert LittleDB.get("lahabrea") == {:ok, "123"}
   end
-
-
-
-
 end

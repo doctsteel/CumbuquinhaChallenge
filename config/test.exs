@@ -23,5 +23,4 @@ config :phoenix, :plug_init_mode, :runtime
 config :phoenix_live_view,
   enable_expensive_runtime_checks: true
 
-config :cmbc, Cmbc.LittleDB,
-  file_path: "test/mock_db/cumbuquinha_test.txt"
+config :cmbc, Cmbc.LittleDB, file_path: "test/mock_db/cumbuquinha_test.txt"
