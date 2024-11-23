@@ -1,9 +1,9 @@
 thancred -> 1
-y'shtola -> "TRUE"
-alphinaud -> TRUE
+y'shtola -> TRUE
+alphinaud -> "vamoooooooo porra"
 alisaie -> 4
 urianger -> "5"
-tataru -> "ABC"
+tataru -> cash
 krile -> ABC
 graha -> "ABC"
 estinien -> AB"C

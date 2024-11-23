@@ -1,4 +1,4 @@
-defmodule CmbcWeb.PageController do
+defmodule CmbcWeb.LilDBController do
   use CmbcWeb, :controller
   @commands ~w(GET SET BEGIN ROLLBACK COMMIT)
 
@@ -51,19 +51,24 @@ defmodule CmbcWeb.PageController do
       ~r/^(?<command>[A-Z]+)\s*(?<key>[^"]\S*|"(?:\\"|[^"])*")?\s*(?<value>([^"]\S*|"(?:\\"|[^"])*")?)?$/
 
 
-    case Regex.named_captures(regex, input) do
+    list = case Regex.named_captures(regex, input) do
       %{"command" => command, "key" => "", "value" => ""} when command in @commands ->
         {:ok, [command]}
 
-      %{"command" => command, "key" => key, "value" => ""} when command in @commands ->
-        {:ok, [command, key]}
-
       %{"command" => command, "key" => key, "value" => value} when command in @commands ->
-        {:ok, [command, key, value]}
+        if not String.match?(key, ~r/^\d+$/) do
+          case value do
+        "" -> {:ok, [command, key]}
+        _ -> {:ok, [command, key, value]}
+          end
+        else
+          {:error, "Key must be a string"}
+        end
 
       _ ->
         {:error, "Invalid command format"}
     end
+
   end
 
   defp handle_command(["SET", key, value], user) when value != "NIL",

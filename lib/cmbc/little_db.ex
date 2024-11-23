@@ -36,7 +36,7 @@ defmodule Cmbc.LittleDB do
     end
   end
 
-  def read_file do
+  defp read_file do
     File.read(@file_path)
   end
 

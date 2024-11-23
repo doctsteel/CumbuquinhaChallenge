@@ -4,15 +4,10 @@ defmodule Cmbc.TransactionManagerTest do
   alias Cmbc.TransactionManager, as: TM
 
   @test_file_path "test/mock_db/cumbuquinha_test.txt"
-  @backup_file_path "test/mock_db/cumbuquinha_test_backup.txt"
+  @copy_from_path "test/mock_db/cumbuquinha_test_copy.txt"
 
   setup do
-    File.cp!(@test_file_path, @backup_file_path)
-
-    on_exit(fn ->
-      File.cp!(@backup_file_path, @test_file_path)
-      File.rm(@backup_file_path)
-    end)
+    File.cp!(@copy_from_path, @test_file_path)
 
     :ok
   end
@@ -42,7 +37,7 @@ defmodule Cmbc.TransactionManagerTest do
   test "get_transaction/2 retrieves old value for users not inside transactions" do
     assert TM.begin_transaction("user5") == :ok
     assert TM.set_transaction("y'shtola", "FALSE", "user5") == {:ok, "TRUE FALSE"}
-    assert TM.get_transaction("y'shtola", "user4") == {:ok, "TRUE"}
+    assert TM.get_transaction("y'shtola", "userNotTransaction") == {:ok, "TRUE"}
     assert TM.get_transaction("y'shtola", "user5") == {:ok, "FALSE"}
   end
 
@@ -50,7 +45,7 @@ defmodule Cmbc.TransactionManagerTest do
     assert TM.begin_transaction("user6") == :ok
     assert TM.set_transaction("lahabrea", "123", "user6") == {:ok, "NIL 123"}
     assert TM.get_transaction("lahabrea", "user6") == {:ok, "123"}
-    assert TM.get_transaction("lahabrea", "user4") == {:ok, "NIL"}
+    assert TM.get_transaction("lahabrea", "userNotTransaction") == {:ok, "NIL"}
   end
 
   test "set_transaction/3 updates existing key in transaction" do
@@ -59,7 +54,7 @@ defmodule Cmbc.TransactionManagerTest do
     assert TM.get_transaction("haurchefant", "user7") == {:ok, "alive"}
     assert TM.set_transaction("haurchefant", "dead", "user7") == {:ok, "alive dead"}
     assert TM.get_transaction("haurchefant", "user7") == {:ok, "dead"}
-    assert TM.get_transaction("haurchefant", "user4") == {:ok, "alive"}
+    assert TM.get_transaction("haurchefant", "userNotTransaction") == {:ok, "alive"}
   end
 
   test "rollback_transaction/1 returns an error if the user does not have a transaction" do
@@ -88,8 +83,8 @@ defmodule Cmbc.TransactionManagerTest do
     assert TM.begin_transaction("user12") == :ok
     assert TM.set_transaction("tataru", "moneyyyyyy", "user12") == {:ok, "cash moneyyyyyy"}
     assert TM.get_transaction("tataru", "user12") == {:ok, "moneyyyyyy"}
-    assert TM.set_transaction("tataru", "out of cash", "user4") == {:ok, "cash out of cash"}
-    assert TM.get_transaction("tataru", "user4") == {:ok, "out of cash"}
+    assert TM.set_transaction("tataru", "out of cash", "userNotTransaction") == {:ok, "cash out of cash"}
+    assert TM.get_transaction("tataru", "userNotTransaction") == {:ok, "out of cash"}
     assert TM.commit_transaction("user12") == {:error, "Atomicity error in field(s): tataru"}
   end
 

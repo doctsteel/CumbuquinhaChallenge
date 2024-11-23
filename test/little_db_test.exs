@@ -4,15 +4,10 @@ defmodule Cmbc.LittleDBTest do
   alias Cmbc.LittleDB
 
   @test_file_path "test/mock_db/cumbuquinha_test.txt"
-  @backup_file_path "test/mock_db/cumbuquinha_test_backup.txt"
+  @copy_from_path "test/mock_db/cumbuquinha_test_copy.txt"
 
   setup do
-    File.cp!(@test_file_path, @backup_file_path)
-
-    on_exit(fn ->
-      File.cp!(@backup_file_path, @test_file_path)
-      File.rm(@backup_file_path)
-    end)
+    File.cp!(@copy_from_path, @test_file_path)
 
     :ok
   end
@@ -36,7 +31,7 @@ defmodule Cmbc.LittleDBTest do
   end
 
   test "set/2 creates a new key in cumbuquinha when the file is empty" do
-    File.write!(@test_file_path, "")
+    File.write(@test_file_path, "")
     assert LittleDB.set("lahabrea", "123") == {:ok, "NIL 123"}
     assert LittleDB.get("lahabrea") == {:ok, "123"}
   end

@@ -3,6 +3,6 @@ defmodule CmbcWeb.Router do
 
   scope "/", CmbcWeb do
     # main route to the cumbuca challenge
-    post "/", PageController, :listener
+    post "/", LilDBController, :listener
   end
 end

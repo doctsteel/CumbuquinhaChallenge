@@ -51,7 +51,7 @@ defmodule Cmbc.TransactionManager do
         {:ok, old_val} = Cmbc.LittleDB.get(key)
         Agent.update(__MODULE__, fn state ->
           Map.update!(state, user, fn translist ->
-            Map.put(translist, key,[ old_val, value ]) |> IO.inspect(label: "transaction list for user #{user}")
+            Map.put(translist, key,[ old_val, value ])
           end)
         end)
         {:ok, old_val <> " " <> value}
