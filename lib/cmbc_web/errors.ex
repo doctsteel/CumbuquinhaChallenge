@@ -31,7 +31,7 @@ defmodule CmbcWeb.Errors do
     defexception message: "COMMIT Syntax error - Correct syntax: COMMIT"
   end
 
-  defmodule KeyIsNilError do
+  defmodule ValueIsNilError do
     defexception message: "Cannot set a key to NIL"
   end
 

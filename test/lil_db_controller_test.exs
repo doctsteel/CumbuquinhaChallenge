@@ -301,7 +301,7 @@ defmodule CmbcWeb.LilDBControllerTest do
     assert conn2.resp_body == "123"
 
     _conn3 =
-      custom_conn("userF")
+      custom_conn("userH")
       |> post("/", "SET timemage 456")
 
     conn4 =

@@ -12,3 +12,4 @@ ysayle -> 10
 blog -> aff
 bleg -> aaaaaaaaaaaaaaaaaaaaaaaaa
 blanet -> b
+ke"y -> pog
