@@ -1,14 +1,14 @@
 defmodule CmbcWeb.LilDBController do
   use CmbcWeb, :controller
   alias CmbcWeb.Errors
-  @commands ~w(GET SET BEGIN ROLLBACK COMMIT)
+  alias Cmbc.CommandParser, as: Command
 
   def listener(conn, _params) do
     {:ok, body, connection} = Plug.Conn.read_body(conn)
 
     try do
       with user <- validate_header(connection) do
-        {:ok, command} = parse_command(body)
+        {:ok, command} = Command.parse(body)
         {:ok, result} = handle_command(command, user)
 
         connection
@@ -25,33 +25,12 @@ defmodule CmbcWeb.LilDBController do
 
   defp validate_header(conn) do
     user = Plug.Conn.get_req_header(conn, "x-client-name")
+
     if Enum.empty?(user) do
       raise Errors.InvalidHeaderError
     end
+
     user
-  end
-
-  def parse_command(input) do
-    regex =
-      ~r/^(?<command>[A-Z]+)\s*(?<key>[^"]\S*|"(?:\\"|[^"])*")?\s*(?<value>([^"]\S*|"(?:\\"|[^"])*")?)?$/
-
-    case Regex.named_captures(regex, String.trim(input)) do
-      %{"command" => command, "key" => "", "value" => ""} when command in @commands ->
-        {:ok, [command]}
-
-      %{"command" => command, "key" => key, "value" => value} when command in @commands ->
-        if not String.match?(key, ~r/^\d+$/) and key != "TRUE" and key != "FALSE" do
-          case value do
-            "" -> {:ok, [command, key]}
-            _ -> {:ok, [command, key, value]}
-          end
-        else
-          raise Errors.KeyNotStringError
-        end
-
-      _ ->
-        raise Errors.ParseError
-    end
   end
 
   defp handle_command(["SET", key, value], user) when value != "NIL",
