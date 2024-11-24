@@ -18,8 +18,11 @@ defmodule Cmbc.CommandParser do
             _ -> {:ok, [command, key, value]}
           end
         else
-          raise Errors.KeyNotStringError
+          raise Errors.KeyNotStringError, key
         end
+
+        %{"command" => command, "key" => _, "value" => _} when command not in @commands ->
+          raise Errors.InvalidCommandError, command
 
       _ ->
         raise Errors.ParseError

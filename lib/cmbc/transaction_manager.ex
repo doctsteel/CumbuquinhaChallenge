@@ -16,7 +16,7 @@ defmodule Cmbc.TransactionManager do
           Map.put(state, user, %{})
         end)
 
-        {:ok, "BEGIN"}
+        {:ok, "OK"}
 
       _ ->
         raise Errors.TransactionAlreadyActiveError
@@ -71,7 +71,7 @@ defmodule Cmbc.TransactionManager do
 
       {:ok, _} ->
         Agent.update(__MODULE__, fn state -> Map.delete(state, user) end)
-        {:ok, "ROLLBACK"}
+        {:ok, "OK"}
     end
   end
 

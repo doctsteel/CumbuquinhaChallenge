@@ -3,12 +3,26 @@ defmodule CmbcWeb.Errors do
     defexception message: "Invalid command format"
   end
 
+  defmodule InvalidCommandError do
+    defexception message: "Invalid command: "
+
+    @impl true
+    def exception(command) do
+      %InvalidCommandError{message: "Invalid command: " <> command}
+    end
+  end
+
   defmodule InvalidHeaderError do
     defexception message: "x-client-name header not found"
   end
 
   defmodule KeyNotStringError do
     defexception message: "Key must be a string"
+
+    @impl true
+    def exception(key) do
+      %KeyNotStringError{message: "Key "<> key <> " invalid: must be a string"}
+    end
   end
 
   defmodule SetSyntaxError do

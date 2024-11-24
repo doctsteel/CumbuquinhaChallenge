@@ -52,13 +52,14 @@ defmodule CmbcWeb.CommandParserTest do
 
   test "parse_command/1 incorrect syntax cases" do
     assert_raise Err.ParseError, fn -> Command.parse("GET key value valueagain") end
-    assert_raise Err.ParseError, fn -> Command.parse("PUT key value") end
-    assert_raise Err.ParseError, fn -> Command.parse("PUT key") end
-    assert_raise Err.ParseError, fn -> Command.parse("PUT") end
+    assert_raise Err.InvalidCommandError, fn -> Command.parse("PUT key value") end
+    assert_raise Err.InvalidCommandError, fn -> Command.parse("PUT key") end
+    assert_raise Err.InvalidCommandError, fn -> Command.parse("PUT") end
     assert_raise Err.KeyNotStringError, fn -> Command.parse("SET 123 value ") end
     assert_raise Err.KeyNotStringError, fn -> Command.parse("SET 123 \"value\" ") end
     assert_raise Err.ParseError, fn -> Command.parse("SET ke\"y val ue") end
     assert_raise Err.KeyNotStringError, fn -> Command.parse("SET TRUE value") end
     assert_raise Err.KeyNotStringError, fn -> Command.parse("SET FALSE value") end
+    assert_raise Err.InvalidCommandError, fn -> Command.parse("PUT key value") end
   end
 end

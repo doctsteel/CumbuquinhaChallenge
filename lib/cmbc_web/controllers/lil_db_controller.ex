@@ -45,13 +45,7 @@ defmodule CmbcWeb.LilDBController do
   defp handle_command(["SET"], _),
     do: raise(Errors.SetSyntaxError)
 
-  defp handle_command(["SET", key, _value], _) when not is_binary(key),
-    do: raise(Errors.KeyNotStringError)
-
-  defp handle_command(["GET", key], user) when is_binary(key), do: handle_get(key, user)
-
-  defp handle_command(["GET", key], _) when not is_binary(key),
-    do: raise(Errors.KeyNotStringError)
+  defp handle_command(["GET", key], user), do: handle_get(key, user)
 
   defp handle_command(["GET", _key | _rest], _),
     do: raise(Errors.GetSyntaxError)

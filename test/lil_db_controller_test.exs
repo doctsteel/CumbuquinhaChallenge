@@ -60,7 +60,7 @@ defmodule CmbcWeb.LilDBControllerTest do
       |> post("/", "GET 123")
 
     assert conn.status == 400
-    assert conn.resp_body == "Error: Key must be a string"
+    assert conn.resp_body == "Error: Key 123 invalid: must be a string"
   end
 
   test "returns 200 with a valid SET command" do
@@ -113,7 +113,7 @@ defmodule CmbcWeb.LilDBControllerTest do
       |> post("/", "SET 123 123")
 
     assert conn.status == 400
-    assert conn.resp_body == "Error: Key must be a string"
+    assert conn.resp_body == "Error: Key 123 invalid: must be a string"
   end
 
   test "returns 200 with a valid BEGIN command" do
@@ -122,7 +122,7 @@ defmodule CmbcWeb.LilDBControllerTest do
       |> post("/", "BEGIN")
 
     assert conn.status == 200
-    assert conn.resp_body == "BEGIN"
+    assert conn.resp_body == "OK"
   end
 
   test "returns 400 with an invalid BEGIN command" do
@@ -131,21 +131,21 @@ defmodule CmbcWeb.LilDBControllerTest do
       |> post("/", "BEGIN")
 
     assert conn.status == 200
-    assert conn.resp_body == "BEGIN"
+    assert conn.resp_body == "OK"
 
     conn =
       custom_conn("userB")
       |> post("/", "BEGIN 123")
 
     assert conn.status == 400
-    assert conn.resp_body == "Error: Key must be a string"
+    assert conn.resp_body == "Error: Key 123 invalid: must be a string"
 
     conn =
       custom_conn("userB")
       |> post("/", "BEGIN 123 123")
 
     assert conn.status == 400
-    assert conn.resp_body == "Error: Key must be a string"
+    assert conn.resp_body == "Error: Key 123 invalid: must be a string"
 
     conn =
       custom_conn("userB")
@@ -183,7 +183,7 @@ defmodule CmbcWeb.LilDBControllerTest do
       |> post("/", "ROLLBACK")
 
     assert conn3.status == 200
-    assert conn3.resp_body == "ROLLBACK"
+    assert conn3.resp_body == "OK"
 
     conn4 =
       custom_conn("userC")
@@ -206,14 +206,14 @@ defmodule CmbcWeb.LilDBControllerTest do
       |> post("/", "ROLLBACK 123")
 
     assert conn.status == 400
-    assert conn.resp_body == "Error: Key must be a string"
+    assert conn.resp_body == "Error: Key 123 invalid: must be a string"
 
     conn =
       custom_conn("userD")
       |> post("/", "ROLLBACK 123 123")
 
     assert conn.status == 400
-    assert conn.resp_body == "Error: Key must be a string"
+    assert conn.resp_body == "Error: Key 123 invalid: must be a string"
 
     conn =
       custom_conn("userD")
@@ -267,14 +267,14 @@ defmodule CmbcWeb.LilDBControllerTest do
       |> post("/", "COMMIT 123")
 
     assert conn.status == 400
-    assert conn.resp_body == "Error: Key must be a string"
+    assert conn.resp_body == "Error: Key 123 invalid: must be a string"
 
     conn =
       custom_conn("userF")
       |> post("/", "COMMIT 123 123")
 
     assert conn.status == 400
-    assert conn.resp_body == "Error: Key must be a string"
+    assert conn.resp_body == "Error: Key 123 invalid: must be a string"
 
     conn =
       custom_conn("userF")
