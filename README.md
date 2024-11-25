@@ -36,22 +36,20 @@ curl --location 'http://localhost:4000' \
 --data 'SET ABC teste'
 ```
 
-É absolutamente necessário o header `X-Client-Name` para o uso do banco.
+**É absolutamente necessário o header `X-Client-Name` para o uso do banco.**
 
 O corpo da request consiste no comando para o banco de dados no formato
 ``[COMANDO] [CHAVE] [VALOR]``, buscando primeiro as seguintes regras: 
   - `[COMANDO]` precisa ser um dos cinco descritos.
   - `[CHAVE]` precisa ser uma string.
   - `TRUE`, `FALSE` e números (exclusivamente, como `123`) sem estarem cercados de aspas não são strings, portanto, não podem ser chaves.
-  - Se a chave ou valor conterem espaços, precisam estar cercados de aspas.
-  - Se uma aspa solta existir no meio de uma chave ou string, ela precisa ser precedida com um escape char. (Exemplo: `ab\"c` )
-
-
+  - Se a chave ou valor contiverem espaços, precisam estar cercados de aspas.
+  - Se uma aspa solta existir no meio de uma chave ou string, ela precisa ser precedida de um escape char. (Exemplo: `ab\"c` )
 
 O servidor dispõe dos cinco comandos descritos: `GET`, `SET`, `BEGIN`, `ROLLBACK` e `COMMIT`.
 
 ### GET
-`GET [CHAVE]`
+`GET [CHAVE]` -> `Erro`
 
 Primeiro checa se existe uma transação do usuário rolando.
 Se existir, busca a chave nessa transação. Se não, busca a chave diretamente no banco de dados, retornando o valor se existir ou `NIL` se não.
@@ -61,7 +59,7 @@ Se existir, busca a chave nessa transação. Se não, busca a chave diretamente 
 
 Se usuário tiver transação ativa, busca primeiro na própria pilha de transações pelo valor a ser alterado. Se não, busca o valor diretamente no banco, armazena o valor lido na transaçao como o valor antigo junto com o valor novo.
 Se não existir transação ativa, busca direto no banco de dados.
-Em bamos os casos, se a chave não existir, ela é criada e `NIL` é retornado como `VALOR_VELHO`
+Em ambos os casos, se a chave não existir, ela é criada e `NIL` é retornado como `VALOR_VELHO`
 
 ### BEGIN
 `BEGIN` -> `OK` ou `Erro`
@@ -73,15 +71,23 @@ Caso o usuário não tenha uma transação ativa, começa uma nova.
 `ROLLBACK` -> `OK`ou `Erro`
 
 Também não aceita parâmetros.
-Se usuário estiver em transação ,desfaz a transação do usuário.
+Se usuário estiver em transação, desfaz a transação do usuário.
 
 ### COMMIT
 `COMMIT` -> `OK` ou `Erro`
 
-Aplica as mudanças armazenadas de um usuário SOMENTE se os valores antigos armazenados na transação batem com os valores atuais do banco de dados.
+Aplica as mudanças armazenadas de um usuário SOMENTE se os valores antigos armazenados na transação batem com os valores atuais do banco de dados. 
+
+Exemplo: \
+Chave ABC contém Valor 123 \
+José começa uma transação \
+José altera chave ABC para valor 456 \
+Sofia altera chave ABC para valor 789 \
+José tenta fazer o `COMMIT`, recebe erro de atomicidade pois o valor de quando ele leu a chave ABC pela primeira vez mudou desde então.
+
 
 ## Decisões relevantes tomadas
-O banco de dados é o arquivo `priv/cumbuquinha.txt` . Acabei decidindo por separar chaves e valores com um -> entre eles em cada linha!
+O banco de dados é o arquivo `priv/cumbuquinha.txt`. Acabei decidindo por separar chaves e valores com um `->` entre eles em cada linha!
 
 Usei um Agent simples pra armazenar o estado de transações de cada usuário.
 
@@ -91,4 +97,4 @@ Escrevi vários testes unitários e alguns de integração usando o ExUnit mesmo
 
 # Cat Tax!!!
 
-![a coisa mais linda do mundo](cat_tax.jpg)
+![a coisa mais linda do mundo](cat_tax.jpeg)
