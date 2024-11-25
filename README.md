@@ -17,6 +17,10 @@ Deixei duas opções prontas para execução: nativamente pela linha de comando 
     1. Tenha o docker desktop instalado
     2. Abra no terminal o diretório do projeto
     3. Rode `docker-compose up --build` e o servidor também vai estar aberto em [`localhost:4000`](http://localhost:4000).
+  
+
+Aliás, escrevi uma batelada de testes unitários e alguns de integração.
+Se quiser rodar, basta executar `mix test` no diretório raiz do projeto!
 
 ## Modo de uso
 
@@ -87,7 +91,7 @@ José tenta fazer o `COMMIT`, recebe erro de atomicidade pois o valor de quando 
 
 
 ## Decisões relevantes tomadas
-O banco de dados é o arquivo `priv/cumbuquinha.txt`. Acabei decidindo por separar chaves e valores com um `->` entre eles em cada linha!
+O banco de dados é o arquivo `priv/cumbuquinha.txt`. Separei chaves e valores com um `->` entre eles em cada linha!
 
 Usei um Agent simples pra armazenar o estado de transações de cada usuário.
 
