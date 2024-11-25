@@ -3,18 +3,7 @@ defmodule CmbcWeb.CommandParserTest do
 
   alias Cmbc.CommandParser, as: Command
   alias CmbcWeb.Errors, as: Err
-  # command reference: COMMAND [KEY] [VALUE]
-  # command must be one of the following: GET, SET, BEGIN, ROLLBACK, COMMIT
-  # command GET must have a KEY
-  # command SET must have a KEY and a VALUE
-  # command BEGIN, ROLLBACK, and COMMIT must not have a KEY or a VALUE
-  # a number is a sequence of digits
-  # a boolean is the sequence of characters TRUE or FALSE without quotes
-  # a string can be either a sequence of alphanumeric characters without quotes if no spaces
-  # or a sequence of alphanumeric characters and spaces enclosed in double quotes
-  # if a string has a quote, it must be escaped with a backslash
-  # KEY must be a string
-  # VALUE can be number, string or boolean
+
   describe "parse_command/1" do
     test "parse_command/1 correct syntax cases" do
       assert Command.parse("GET") == {:ok, ["GET"]}

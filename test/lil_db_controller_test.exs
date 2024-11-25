@@ -54,7 +54,6 @@ defmodule CmbcWeb.LilDBControllerTest do
     assert conn.status == 400
     assert conn.resp_body == "Error: GET Syntax error - Correct syntax: GET <key>"
 
-    ## case when the key is a number
     conn =
       custom_conn("userA")
       |> post("/", "GET 123")

@@ -82,7 +82,6 @@ defmodule Cmbc.TransactionManagerTest do
   test "commit_transaction/1 raises an atomicity error if there are conflicts" do
     assert TM.begin_transaction("user11") == {:ok, "OK"}
     assert TM.set_transaction("haurchefant", "alive", "user11") == {:ok, "NIL alive"}
-    # Simulate a conflict by changing the value in the database directly
     Cmbc.LittleDB.set("haurchefant", "dead")
 
     assert_raise AtomicityError, fn ->

@@ -4,10 +4,9 @@ defmodule CmbcWeb.LilDBController do
   alias Cmbc.CommandParser, as: Command
 
   def listener(conn, _params) do
-    {:ok, body, connection} = Plug.Conn.read_body(conn)
 
     try do
-      with user <- validate_header(connection) do
+      with {user, body, connection} <- validate_header(conn) do
         {:ok, command} = Command.parse(body)
         {:ok, result} = handle_command(command, user)
 
@@ -17,7 +16,7 @@ defmodule CmbcWeb.LilDBController do
       end
     rescue
       e ->
-        connection
+        conn
         |> put_resp_content_type("text/plain")
         |> send_resp(400, "Error: " <> Exception.message(e))
     end
@@ -29,8 +28,16 @@ defmodule CmbcWeb.LilDBController do
     if Enum.empty?(user) do
       raise Errors.InvalidHeaderError
     end
+    {:ok, body, connection} = case Plug.Conn.get_req_header(conn, "content-type") do
+      ["text/plain"] -> Plug.Conn.read_body(conn)
 
-    user
+      ["application/x-www-form-urlencoded"] ->
+        conn = Plug.Conn.fetch_query_params(conn)
+        IO.inspect(conn.params)
+        {:ok, Map.keys(conn.params) |> List.first(), conn}
+    end
+
+    { user, body, connection }
   end
 
   defp handle_command(["SET", key, value], user) when value != "NIL",
@@ -76,9 +83,6 @@ defmodule CmbcWeb.LilDBController do
   end
 
   defp handle_get(key, user) do
-    # first, check if the user has transaction active.
-    # if it does, get the value from the transaction.
-    # if it does not, get the value from the db.
     Cmbc.TransactionManager.get_transaction(key, user)
   end
 
